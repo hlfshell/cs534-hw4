@@ -137,7 +137,7 @@ To find the Silhouette Coefficient Index, we take a given cluster $C_i$, select 
     a_1 = \frac{1}{n} \sum d(x_2, C_1); \; = \frac{1}{2} (1, 6) = 3.5
 \end{equation}
 
-/noindent ...we need to test both $x_2$, $x_3$ and $x_4$ to find the minimum average distance to utilize for our calculation.
+\noindent ...we need to test both $x_2$, $x_3$ and $x_4$ to find the minimum average distance to utilize for our calculation.
 
 \begin{equation}
     a_2 = \frac{1}{n} \sum d(x_2, C_0); \; = \frac{1}{2} (7, 4) = 5.5
@@ -158,5 +158,40 @@ To find the Silhouette Coefficient Index, we take a given cluster $C_i$, select 
 \end{equation}
 
 \noindent ...so the Silhouette Coefficient Index for our clusters $C_0$ and $C_1$ are $S_1=0.76$ and $S_2=0.37$, respectively.
+
+We are now going to calculate the Davies-Bouldin Index. To find this, we will be first finding the average distance from a given cluster's $C_i$'s points to its centroid ($s_i$), the distance between the centroids of two given clusters ($d_{ij}$), and then the max $R_{i,j}$ where...
+
+\begin{equation}
+    R_{i,j} = \frac{s_1+s_2}{d_{ij}}
+\end{equation}
+
+\noindent ...then we find the max $R_{i,j}$ (which will be the only one we calculate as we only have two clusters), and then take the average of those maxes - will again be just $R_{ij}$ given our setup.
+
+\begin{equation}
+    D_i = \max(R_{i,j})
+\end{equation}
+
+\begin{equation}
+    DB_{index} = \frac{1}{N} \sum^N_{i=1} D_i
+\end{equation}
+
+\noindent ...and now with our values:
+
+\begin{equation}
+    s_1 = \frac{1}{2} \sum (1.5, 1.5) = 1.5
+\end{equation}
+
+\begin{equation}
+    s_2 = \frac{1}{3} \sum (2.33, 1.33, 3.67) = 2.44
+\end{equation}
+
+\begin{equation}
+    R_{0,1} = \frac{1.5 + 2.44}{7.83} = 0.50
+\end{equation}
+
+Finally we are moving onto the Calinski-Harabasz Index. To calculate this, we will be utilizing the following equation:
+
+
+
 
 \end{document}
