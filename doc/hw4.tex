@@ -415,4 +415,54 @@ Since $A$ wins two of three indexes, we would say that $A$ is the better cluster
 
 \section*{Problem 2}
 
+In this problem we are performing Association Analysis (AA) on the following supermarket customer transactions:
+
+\begin{center}
+    \begin{tabular}{c c c c}
+        Transaction (C) & Milk (M) & Eggs (E) & Bread (B) \\
+        Customer 1 & 0 & 1 & 1 \\
+        Customer 2 & 1 & 0 & 1 \\
+        Customer 3 & 1 & 1 & 0 \\ 
+        Customer 4 & 0 & 1 & 1 \\ 
+        Customer 5 & 1 & 1 & 1 \\ 
+        Customer 6 & 0 & 1 & 1 \\ 
+        Customer 7 & 1 & 1 & 1 \\ 
+    \end{tabular}
+\end{center}
+
+\subsection*{Part A}
+
+First we will generate all the possible itemsets:
+
+\begin{center}
+    \begin{tabular}{c c c c}
+        Itemset & Size & Frequency & Support \\
+        M & 1 & 0 & $\frac{4}{7}$\\\\
+        E & 1 & 0 & $\frac{6}{7}$\\\\
+        B & 1 & 0 & $\frac{6}{7}$\\\\
+        ME & 2 & 1 & $\frac{3}{7}$\\\\
+        MB & 2 & 1 & $\frac{3}{7}$\\\\
+        EB & 2 & 3 & $\frac{5}{7}$\\\\
+        MEB & 3 & 2 & $\frac{2}{7}$\\\\
+    \end{tabular}
+\end{center}
+
+\subsection*{Part B}
+
+Assuming that our support threshold is $30\%$, here we will generate all possible associations; note that we're only including itemsets of size 2 and higher.
+
+\begin{center}
+    \begin{tabular}{c c c}
+        Antecedent & Consequent & Confidence \\
+        M & E & $\frac{support(M \cup E)}{support(M)} = \frac{3/7}{4/7} = 0.75$ \\\\
+        M & B & $\frac{support(M \cup B)}{support(M)} = \frac{3/7}{4/7} = 0.75$ \\\\
+        E & B & $\frac{support(E \cup B)}{support(E)} = \frac{5/7}{6/7} = 0.83$ \\\\
+    \end{tabular}
+\end{center}
+
+\subsection*{Part C}
+
+If our confidence threshold is above 70\%, then $1)$ Milk, therefore Eggs, $2)$ Milk, therefore Bread, and $3)$ Eggs, therefore Bread.
+
+
 \end{document}
