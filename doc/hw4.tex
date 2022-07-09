@@ -592,6 +592,253 @@ Our first step is to calculate the output for our given function with our weight
 
 \subsection*{Part A}
 
-Here we are considering a 1dimensional time-series with values ${2, 1, 3, 4, 7}$. We are going to perform a convolution with a $
+Here we are considering a 1dimensional time-series with values ${2, 1, 3, 4, 7}$. We are going to perform a convolution with a ${1, 0, 1}$ filter and zero padding.
+
+\noindent Our first batch, due to zero padding, is ${0, 2, 1}$. So we have $0*1 + 0*2 + 0*1 = 0$
+
+\noindent Convolving over one we then look at batch ${2, 1, 3}$, for $1*2 + 0*1 + 1*3 = 5$.
+
+\noindent Over to ${1,3,4}$ we get $1*1 + 0*3 + 1*4 = 5$.
+
+\noindent Moving further to ${3,4,7}$ we have $1*3 + 0*4 + 1*7 = 10$
+
+\noindent ...and finally, due to zero padding, ${4,7,0}$, we get $1*4 + 0*7 + 1*0 = 4$.
+
+\noindent So our final result is ${0, 5, 5, 10, 4}$
+
+\subsection*{Part B}
+
+Here we are utilizing the following tensor and filter, and are performing a stride of 1 convolution with no padding.
+
+\begin{center}
+    \begin{tabular}{c c c c c c c}
+        6 & 3 & 4 & 5 & 5 & 0 & 3 \\
+        4 & 7 & 0 & 4 & 4 & 0 & 4 \\
+        7 & 0 & 3 & 4 & 4 & 5 & 2 \\
+        3 & 7 & 0 & 3 & 3 & 0 & 7 \\
+        5 & 8 & 2 & 5 & 5 & 4 & 2 \\
+        8 & 0 & 0 & 6 & 6 & 0 & 0 \\
+        6 & 4 & 3 & 0 & 0 & 4 & 5 \\
+    \end{tabular}
+\end{center}
+
+\begin{center}
+    \begin{tabular}{c c c}
+        1 & 1 & 1 \\
+        0 & 0 & 0 \\
+        -1 & -1 & -1\\
+    \end{tabular}
+\end{center}
+
+\noindent: What follows is the resulting convolution with this horizontal edge detection filter.
+
+\begin{equation}
+    1*6 + 1*3 + 1*4 + 0*4 + 0*7 + 0*4 + -1*7 + -1*0 + -1*2 = 1
+\end{equation}
+
+\begin{equation}
+    1*3 + 1*4 + 1*4 + 0*7 + 0*4 + 0*0 + -1*0 + -1*2 + -1*3 = 6
+\end{equation}
+
+\begin{equation}
+    1*4 + 1*4 + 1*5 + 0*7 + 0*4 + 0*4 + -1*2 + -1*3 + -1*4 = 4
+\end{equation}
+
+\begin{equation}
+    1*4 + 1*5 + 1*0 + 0*0 + 0*4 + 0*0 + -1*3 + -1*4 + -1*5 = -3
+\end{equation}
+
+\begin{equation}
+    1*5 + 1*0 + 1*3 + 0*4 + 0*0 + 0*4 + -1*4 + -1*5 + -1*2 = -1
+\end{equation}
+
+\noindent ...then we move down a row...
+
+\begin{equation}
+    1*4 + 1*7 + 1*4 + 0*7 + 0*0 + 0*2 + -1*3 + -1*7 + -1*5 = 0
+\end{equation}
+
+\begin{equation}
+    1*7 + 1*4 + 1*0 + 0*0 + 0*2 + 0*3 + -1*7 + -1*5 + -1*0 = -1
+\end{equation}
+
+\begin{equation}
+    1*4 + 1*0 + 1*4 + 0*2 + 0*3 + 0*4 + -1*5 + -1*0 + -1*3 = 0
+\end{equation}
+
+\begin{equation}
+    1*0 + 1*4 + 1*0 + 0*3 + 0*4 + 0*5 + -1*0 + -1*3 + -1*0 = 1
+\end{equation}
+
+\begin{equation}
+    1*4 + 1*0 + 1*4 + 0*4 + 0*5 + 0*2 + -1*3 + -1*0 + -1*7 = -2
+\end{equation}
+
+\noindent ...and onto the next row:
+
+\begin{equation}
+    1*7 + 1*0 + 1*2 + 0*3 + 0*7 + 0*5 + -1*5 + -1*8 + -1*1 = -5
+\end{equation}
+
+\begin{equation}
+    1*0 + 1*2 + 1*3 + 0*7 + 0*5 + 0*0 + -1*8 + -1*1 + -1*2 = -6
+\end{equation}
+
+\begin{equation}
+    1*2 + 1*3 + 1*4 + 0*5 + 0*0 + 0*3 + -1*1 + -1*2 + -1*5 = 1
+\end{equation}
+
+\begin{equation}
+    1*3 + 1*4 + 1*5 + 0*0 + 0*3 + 0*0 + -1*2 + -1*5 + -1*4 = 1
+\end{equation}
+
+\begin{equation}
+    1*4 + 1*5 + 1*2 + 0*3 + 0*0 + 0*7 + -1*5 + -1*4 + -1*2 = 0
+\end{equation}
+
+\noindent ...and again:
+
+\begin{equation}
+    1*3 + 1*7 + 1*5 + 0*5 + 0*8 + 0*1 + -1*8 + -1*0 + -1*1 = 6
+\end{equation}
+
+\begin{equation}
+    1*7 + 1*5 + 1*0 + 0*8 + 0*1 + 0*2 + -1*0 + -1*1 + -1*0 = 11
+\end{equation}
+
+\begin{equation}
+    1*5 + 1*0 + 1*3 + 0*1 + 0*2 + 0*5 + -1*1 + -1*0 + -1*6 = 1
+\end{equation}
+
+\begin{equation}
+    1*0 + 1*3 + 1*0 + 0*2 + 0*5 + 0*4 + -1*0 + -1*6 + -1*0 = -3
+\end{equation}
+
+\begin{equation}
+    1*3 + 1*0 + 1*7 + 0*5 + 0*4 + 0*2 + -1*6 + -1*0 + -1*0 = 4
+\end{equation}
+
+\noindent Exhaustingly, one more row left:
+
+\begin{equation}
+    1*5 + 1*8 + 1*1 + 0*8 + 0*0 + 0*1 + -1*6 + -1*4 + -1*1 = 1
+\end{equation}
+
+\begin{equation}
+    1*8 + 1*1 + 1*2 + 0*0 + 0*1 + 0*0 + -1*4 + -1*1 + -1*3 = 3
+\end{equation}
+
+\begin{equation}
+    1*1 + 1*2 + 1*5 + 0*1 + 0*0 + 0*6 + -1*1 + -1*3 + -1*0 = 4
+\end{equation}
+
+\begin{equation}
+    1*2 + 1*5 + 1*4 + 0*0 + 0*6 + 0*0 + -1*3 + -1*0 + -1*4 = 4
+\end{equation}
+
+\begin{equation}
+    1*5 + 1*4 + 1*2 + 0*6 + 0*0 + 0*0 + -1*0 + -1*4 + -1*5 = 2
+\end{equation}
+
+\noindent Finally, our results are:
+
+\begin{center}
+    \begin{tabular}{c c c c c}
+        1 & 6 & 4 & -3 & -1 \\
+        0 & -1 & 0 & 1 & -2 \\
+        -5 & -6 & 1 & 1 & 0 \\
+        6 & 11 & 1 & -3 & 4 \\
+        1 & 3 & 4 & 4 & 2 \\
+    \end{tabular}
+\end{center}
+
+\subsection*{Part C}
+
+Now we seek to perform a $4x4$ pooling with stride $1$ from the above input. Since no pooling type is specified, we shall perform a max pooling.
+
+\noindent Our first passover:
+
+\begin{equation}
+    \max(6, 3, 4, 4, 4, 7, 4, 0, 7, 0, 2, 3, 3, 7, 5, 0) = 7
+\end{equation}
+
+\begin{equation}
+    \max(3, 4, 4, 5, 7, 4, 0, 4, 0, 2, 3, 4, 7, 5, 0, 3) = 7
+\end{equation}
+
+\begin{equation}
+    \max(4, 4, 5, 0, 4, 0, 4, 0, 2, 3, 4, 5, 5, 0, 3, 0) = 5
+\end{equation}
+
+\begin{equation}
+    \max(4, 5, 0, 3, 0, 4, 0, 4, 3, 4, 5, 2, 0, 3, 0, 7) = 7
+\end{equation}
+
+\noindent ...next row:
+
+\begin{equation}
+    \max(4, 7, 4, 0, 7, 0, 2, 3, 3, 7, 5, 0, 5, 8, 1, 2) = 7
+\end{equation}
+
+\begin{equation}
+    \max(7, 4, 0, 4 , 0, 2, 3, 4, 7, 5, 0, 3, 8, 1, 2, 5) = 7
+\end{equation}
+
+\begin{equation}
+    \max(4, 0, 4, 0, 2, 3, 4, 5, 5, 0, 3, 0, 1, 2, 5, 4) = 5
+\end{equation}
+
+\begin{equation}
+    \max(0, 4, 0, 4, 3, 4, 5, 2, 0, 3, 0, 7, 2, 5, 4, 2) = 5
+\end{equation}
+
+\noindent ...and the next
+
+\begin{equation}
+    \max(7, 0, 2, 3, 3, 7, 5, 0, 5, 8, 1, 2, 8, 0, 1, 0) = 8
+\end{equation}
+
+\begin{equation}
+    \max(0, 2, 3, 4, 7, 5, 0, 3, 8, 1, 2, 5, 0, 1, 0, 6) = 8
+\end{equation}
+
+\begin{equation}
+    \max(2, 3, 4, 5, 5, 0, 3, 0, 1, 2, 5, 4, 1, 0, 6, 0) = 6
+\end{equation}
+
+\begin{equation}
+    \max(3, 4, 5, 2, 0, 3, 0, 7, 2, 5, 4, 2, 0, 6, 0, 0) = 7
+\end{equation}
+
+\noindent ...and finally the last row:
+
+\begin{equation}
+    \max(3, 7, 5, 0, 5, 8, 1, 2, 8, 0, 1, 0, 6, 4, 1, 3) = 8
+\end{equation}
+
+\begin{equation}
+    \max(7, 5, 0, 3, 8, 1, 2, 5, 0, 1, 0, 6, 4, 1, 3, 0) = 8
+\end{equation}
+
+\begin{equation}
+    \max(5, 0, 3, 0, 1, 2, 5, 4, 1, 0, 6, 0, 1, 3, 0, 4) = 6
+\end{equation}
+
+\begin{equation}
+    \max(0, 3, 0, 7, 2, 5, 4, 2, 0, 6, 0, 0, 3, 0, 4, 5) = 7
+\end{equation}
+
+\noindent ...for our resulting pooled output:
+
+\begin{center}
+    \begin{tabular}{c c c c}
+        7 & 7 & 5 & 7 \\
+        7 & 7 & 5 & 5 \\
+        8 & 8 & 6 & 7 \\
+        8 & 8 & 6 & 7 \\
+    \end{tabular}
+\end{center}
+
+
 
 \end{document}
