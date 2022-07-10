@@ -7,9 +7,9 @@ from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-DATASET_PATH = "./dataset_100"
+DATASET_PATH = "./dataset_300"
 FULL_DATASET_PATH = "./dataset_full"
-EPOCHS = 10
+EPOCHS = 25
 LEARNING_RATE = 0.01
 
 model = torch.hub.load('pytorch/vision:v0.10.0', 'alexnet', pretrained=True)
@@ -50,6 +50,7 @@ criterion = torch.nn.CrossEntropyLoss()
 
 lowest_validation_loss = 1_000_000
 losses = []
+validation_losses = []
 
 for epoch in range(0, EPOCHS):
     print(f"***** EPOCH {epoch+1} *****")
@@ -75,20 +76,22 @@ for epoch in range(0, EPOCHS):
     # After every epoch, let's check to see how it stacks up against
     # the full dataset
     # Model into eval mode
-    model.eval()
-    total_batches = len(validation_dataloader)
-    total_loss = 0.0
-    for _, data in enumerate(validation_dataloader):
-        inputs, labels = data
-        
-        output = model(inputs)
-        loss = criterion(output, labels)
+    with torch.no_grad():
+        model.eval()
+        total_batches = len(validation_dataloader)
+        total_loss = 0.0
+        for _, data in enumerate(validation_dataloader):
+            inputs, labels = data
+            
+            output = model(inputs)
+            loss = criterion(output, labels)
 
-        total_loss += loss
+            total_loss += loss.item()
 
     # Put us back into training mode
     model.train()
     validation_loss = total_loss / total_batches
+    validation_losses.append(validation_loss)
     print(f"Validation test loss - {validation_loss}")
     if validation_loss < lowest_validation_loss:
         # Save the model!
@@ -99,10 +102,20 @@ for epoch in range(0, EPOCHS):
         print(f'New validation loss low -  trained model saved to {filename}')
 
 print("***** Training complete! *****")
+final_model_path = "model-final.pt"
+torch.save(model.state_dict(), final_model_path)
+print(f"Final model saved as {final_model_path}")
 
 plt.figure("losses")
 plt.plot(losses, linestyle = 'dotted')
 plt.title("Training Loss Over Time")
-plt.xlabel("Batch")
+plt.xlabel("Iteration")
 plt.ylabel("Loss")
 plt.savefig("./loss_plot.jpg")
+
+plt.figure("validation_losses")
+plt.plot(validation_losses, linestyle = 'dotted')
+plt.title('Validation Training Loss Over Time')
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.savefig("./validation_loss_plot.jpg")
