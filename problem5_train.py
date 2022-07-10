@@ -1,12 +1,15 @@
 import os
 import torch
 
+import matplotlib.pyplot as plt
+
 from PIL import Image
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms
 
-DATASET_PATH = "./dataset_300"
-EPOCHS = 50
+DATASET_PATH = "./dataset_100"
+FULL_DATASET_PATH = "./dataset_full"
+EPOCHS = 10
 LEARNING_RATE = 0.01
 
 model = torch.hub.load('pytorch/vision:v0.10.0', 'alexnet', pretrained=True)
@@ -37,11 +40,16 @@ preprocess = transforms.Compose([
 ])
 
 dataset = datasets.ImageFolder(DATASET_PATH, transform=preprocess)
+validation_dataset = datasets.ImageFolder(FULL_DATASET_PATH, transform=preprocess)
 
 dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+validation_dataloader = DataLoader(validation_dataset, batch_size=32, shuffle=True)
 
 optimizer = torch.optim.Adam(model.parameters(), lr=LEARNING_RATE)
 criterion = torch.nn.CrossEntropyLoss()
+
+lowest_validation_loss = 1_000_000
+losses = []
 
 for epoch in range(0, EPOCHS):
     print(f"***** EPOCH {epoch+1} *****")
@@ -58,7 +66,43 @@ for epoch in range(0, EPOCHS):
         loss.backward()
         optimizer.step()
         running_loss += loss.item()
+        losses.append(loss.item())
 
         # Status update every 10 batches
         if batch_index % 10 == 9 or batch_index == 0:    
-            print('Epoch: {}, Batch: {}, Avg. Loss: {}'.format(epoch + 1, batch_index+1, running_loss/(batch_index+1)))
+            print(f'Epoch: {epoch + 1}, Batch: {batch_index+1}, Avg. Loss: {running_loss/(batch_index+1)}')
+
+    # After every epoch, let's check to see how it stacks up against
+    # the full dataset
+    # Model into eval mode
+    model.eval()
+    total_batches = len(validation_dataloader)
+    total_loss = 0.0
+    for _, data in enumerate(validation_dataloader):
+        inputs, labels = data
+        
+        output = model(inputs)
+        loss = criterion(output, labels)
+
+        total_loss += loss
+
+    # Put us back into training mode
+    model.train()
+    validation_loss = total_loss / total_batches
+    print(f"Validation test loss - {validation_loss}")
+    if validation_loss < lowest_validation_loss:
+        # Save the model!
+        lowest_validation_loss = validation_loss
+        filename = f'model-{epoch+1}.pt'
+        model_path = os.path.join("./", filename)
+        torch.save(model.state_dict(), model_path)
+        print(f'New validation loss low -  trained model saved to {filename}')
+
+print("***** Training complete! *****")
+
+plt.figure("losses")
+plt.plot(losses, linestyle = 'dotted')
+plt.title("Training Loss Over Time")
+plt.xlabel("Batch")
+plt.ylabel("Loss")
+plt.savefig("./loss_plot.jpg")
