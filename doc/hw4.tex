@@ -839,6 +839,88 @@ Now we seek to perform a $4x4$ pooling with stride $1$ from the above input. Sin
     \end{tabular}
 \end{center}
 
+\section*{Problem 5}
 
+In this problem, we are looking to demonstrate transfer learning using AlexNet on a provided dataset of plants. For our purposes (and due to limitations of training hardware) we have limited ourselves to only 8 categories from this dataset.
+
+We seek to demonstrate the difference of accuracy of a model trained on different size datasets - specifically, we will be limiting each cateogry to $100$, $150$, $200$, $250$, and $300$ images.
+
+During training, we tracked not just the running average loss per epoch, but also tracked a "full loss" at the end of each epoch. This is calculated at the end of each epoch, disabling gradient training on the model, and then running the model through the entire dataset to calculate average loss, instead of utilizing the limited dataset.
+
+We trained through $25$ epochs with a learning rate of $0.01$. These are our results:
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/loss_plot_100.jpg}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/validation_loss_plot_100.jpg}
+    \end{subfigure}
+    \caption{Training and Validation Loss w/ Dataset of 100 Images Per Category}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/loss_plot_150.jpg}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/validation_loss_plot_150.jpg}
+    \end{subfigure}
+    \caption{Training and Validation Loss w/ Dataset of 150 Images Per Category}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/loss_plot_200.jpg}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/validation_loss_plot_200.jpg}
+    \end{subfigure}
+    \caption{Training and Validation Loss w/ Dataset of 200 Images Per Category}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/loss_plot_250.jpg}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/validation_loss_plot_250.jpg}
+    \end{subfigure}
+    \caption{Training and Validation Loss w/ Dataset of 250 Images Per Category}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/loss_plot_300.jpg}
+    \end{subfigure}
+    \begin{subfigure}{0.4\textwidth}
+        \centering
+        \includegraphics[width = \textwidth]{imgs/loss/validation_loss_plot_300.jpg}
+    \end{subfigure}
+    \caption{Training and Validation Loss w/ Dataset of 300 Images Per Category}
+\end{figure}
+noindent Finally, we present the accuracy of our final models, when compared against the full dataset:
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width = 0.75\textwidth]{imgs/model_accuracy.jpg}
+    \caption{Model Accuracy}
+\end{figure}
+
+Here we see a clear increase in accuracy of the transfer-learned model as we increase the amonut of data available to the network to train upon. We ranged from $95\%$ to $98\%$ with 100 to 300 images per category, respectively.
 
 \end{document}
